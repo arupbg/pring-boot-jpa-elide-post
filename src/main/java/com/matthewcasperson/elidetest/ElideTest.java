@@ -42,39 +42,6 @@ public class ElideTest {
         return new MultivaluedHashMap<String, String>(input);
     }
 
-    @CrossOrigin(origins = "*")
-    @RequestMapping(
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE,
-            value={"/{entity}", "/{entity}/{id}/relationships/{entity2}", "/{entity}/{id}/{child}", "/{entity}/{id}"})
-    @Transactional
-    public String jsonApiGet(@RequestParam final Map<String, String> allRequestParams, final HttpServletRequest request) {
-        /*
-            Here we pass through the data Spring has provided for us in the parameters, then making
-            use of Java 8 Lambdas to do something useful.
-         */
-        return elideRunner(
-                request,
-                (elide, path) -> elide.get(path, fromMap(allRequestParams), new Object()).getBody());
-    }
-
-    @CrossOrigin(origins = "*")
-    @RequestMapping(
-            method = RequestMethod.POST,
-            produces = MediaType.APPLICATION_JSON_VALUE,
-            value={"/{entity}", "/{entity}/{id}/relationships/{entity2}"})
-    @Transactional
-    public String jsonApiPost(@RequestBody final String body, final HttpServletRequest request) {
-        /*
-            There is not much extra work to do here over what we have already put in place for the
-            get request. Our callback changes slightly, but we are still just wiring objects
-            from Spring to Elide.
-         */
-        return elideRunner(
-                request,
-                (elide, path) -> elide.post(path, body, new Object(), SecurityMode.SECURITY_INACTIVE).getBody());
-    }
-
     /**
      * All our elide operations require similar initialisation, which we perform in this method before calling
      * elideCallable with the elide object and the path that elide needs to know what it is supposed to do.
@@ -120,5 +87,38 @@ public class ElideTest {
             Now that the boilerplate initialisation is done, we let the caller do something useful
          */
         return elideCallable.call(elide, fixedPath);
+    }
+
+    @CrossOrigin(origins = "*")
+    @RequestMapping(
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            value={"/{entity}", "/{entity}/{id}/relationships/{entity2}", "/{entity}/{id}/{child}", "/{entity}/{id}"})
+    @Transactional
+    public String jsonApiGet(@RequestParam final Map<String, String> allRequestParams, final HttpServletRequest request) {
+        /*
+            Here we pass through the data Spring has provided for us in the parameters, then making
+            use of Java 8 Lambdas to do something useful.
+         */
+        return elideRunner(
+                request,
+                (elide, path) -> elide.get(path, fromMap(allRequestParams), new Object()).getBody());
+    }
+
+    @CrossOrigin(origins = "*")
+    @RequestMapping(
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            value={"/{entity}", "/{entity}/{id}/relationships"})
+    @Transactional
+    public String jsonApiPost(@RequestBody final String body, final HttpServletRequest request) {
+        /*
+            There is not much extra work to do here over what we have already put in place for the
+            get request. Our callback changes slightly, but we are still just passing objects
+            from Spring to Elide.
+         */
+        return elideRunner(
+                request,
+                (elide, path) -> elide.post(path, body, new Object(), SecurityMode.SECURITY_INACTIVE).getBody());
     }
 }

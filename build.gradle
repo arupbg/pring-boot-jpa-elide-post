@@ -19,7 +19,7 @@ apply plugin: 'idea'
 apply plugin: 'spring-boot'
 
 jar {
-    baseName = 'spring-boot-jpa-elide'
+    baseName = 'spring-boot-jpa-elide-post'
     version =  '0.0.1'
 }
 
