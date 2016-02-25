@@ -109,7 +109,7 @@ public class ElideTest {
     @RequestMapping(
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE,
-            value={"/{entity}", "/{entity}/{id}/relationships"})
+            value={"/{entity}", "/{entity}/{id}/relationships/{entity2}"})
     @Transactional
     public String jsonApiPost(@RequestBody final String body, final HttpServletRequest request) {
         /*
